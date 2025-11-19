@@ -4,6 +4,9 @@ class CartRepository {
   constructor() {
     this.dao = new CartDAO();
   }
+  all() { 
+    return this.dao.all();
+  }
   create(data) {
     return this.dao.create(data);
   }

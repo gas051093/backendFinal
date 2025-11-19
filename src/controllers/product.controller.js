@@ -25,31 +25,55 @@ class ProductController {
   };
 
   static list = async (req, res) => {
-    const { page = 1, limit = 10 } = req.query;
-    const result = await productService.getProducts(
-      {},
-      { page, limit, lean: true }
-    );
-    res.json(result);
+    try {
+      const { page = 1, limit = 10 } = req.query;
+      const result = await productService.getProducts(
+        {},
+        { page, limit, lean: true }
+      );
+      res.json(result);
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Error en el servidor", err: err.message });
+    }
   };
 
   static getOne = async (req, res) => {
-    const product = await productService.getProductById(req.params.pid);
-    if (!product) return res.status(404).json({ message: "Product not found" });
-    res.json(product);
+    try {
+      const product = await productService.getProductById(req.params.pid);
+      if (!product) return res.status(404).json({ message: "Product not found" });
+      res.json(product);
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Error en el servidor", err: err.message });
+    }
   };
 
   static update = async (req, res) => {
-    const updated = await productService.updateProduct(
-      req.params.pid,
-      req.body
-    );
-    res.json(updated);
+    try {
+      const updated = await productService.updateProduct(
+        req.params.pid,
+        req.body
+      );
+      res.json(updated);
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Error en el servidor", err: err.message });
+    }
   };
 
   static delete = async (req, res) => {
-    await productService.deleteProduct(req.params.pid);
-    res.json({ message: "deleted" });
+    try {
+      await productService.deleteProduct(req.params.pid);
+      res.json({ message: "deleted" });
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Error en el servidor", err: err.message });
+    }
   };
 }
 

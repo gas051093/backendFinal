@@ -2,13 +2,16 @@ import passport from "passport";
 import LocalStrategy from "passport-local";
 import JwtStrategy from "passport-jwt";
 import UserService from "../services/user.service.js";
+import CartService from '../services/cart.service.js'
 import { createHash, isValidatePassword } from "../utils/index.js";
+import envs from "./envs.js";
 
 const userService = new UserService();
+const cartService = new CartService();
 const Local = LocalStrategy.Strategy;
 const JWT = JwtStrategy.Strategy;
 const ExtractJwt = JwtStrategy.ExtractJwt;
-
+const secretOrKey = envs.JWT_SECRET
 const cookieExtractor = (req) => {
   let token = null;
   if (req && req.cookies) token = req.cookies["authCookie"];
@@ -24,7 +27,6 @@ export const initializePassport = () => {
         try {
           const exist = await userService.getUserByEmail(email);
           if (exist) return done(null, false, { message: "Email en uso" });
-
           const newUser = {
             first_name: req.body.first_name,
             last_name: req.body.last_name,
@@ -33,8 +35,10 @@ export const initializePassport = () => {
             password: createHash(password),
           };
 
-          const created = await userService.createUser(newUser);
-          return done(null, created);
+          const user = await userService.createUser(newUser);
+          const cart = await cartService.createCart({ user: user._id })
+          const userWithCart = await userService.updateUser(user._id, {cart: cart._id})
+          return done(null, userWithCart);
         } catch (err) {
           return done(null, false, { message: err.message });
         }
@@ -69,7 +73,7 @@ export const initializePassport = () => {
           cookieExtractor,
           ExtractJwt.fromAuthHeaderAsBearerToken(),
         ]),
-        secretOrKey: process.env.JWT_SECRET || "changeme",
+        secretOrKey,
       },
       async (jwt_payload, done) => {
         try {

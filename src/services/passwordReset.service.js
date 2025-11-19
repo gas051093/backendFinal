@@ -12,7 +12,7 @@ class PasswordResetService {
     const tokenHash = hashToken(tokenPlain);
     const expiresAt = new Date(
       Date.now() +
-        Number(process.env.PASSWORD_RESET_EXPIRES_MIN || 60) * 60 * 1000
+      Number(process.env.PASSWORD_RESET_EXPIRES_MIN) * 60 * 1000,
     );
 
     await this.repo.invalidateAll(userId);

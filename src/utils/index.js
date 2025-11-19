@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 
 export const createHash = (password) => {
-  const rounds = Number(process.env.PASSWORD_SALT_ROUNDS || 10);
+  const rounds = Number(process.env.PASSWORD_SALT_ROUNDS);
   return bcrypt.hashSync(password, bcrypt.genSaltSync(rounds));
 };
 
@@ -12,8 +12,8 @@ export const isValidatePassword = (plain, hash) => {
   return bcrypt.compareSync(plain, hash);
 };
 
-export const generateToken = (payload, expiresIn = "1h") => {
-  const secret = process.env.JWT_SECRET || "changeme";
+export const generateToken = (payload, expiresIn = "5min") => {
+  const secret = process.env.JWT_SECRET;
   return jwt.sign(payload, secret, { expiresIn });
 };
 

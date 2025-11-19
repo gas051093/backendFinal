@@ -4,7 +4,9 @@ class CartService {
   constructor() {
     this.repo = new CartRepository();
   }
-
+  all() { 
+    return this.repo.all();
+  }
   createCart(data) {
     return this.repo.create(data);
   }

@@ -1,6 +1,5 @@
 import passport from "passport";
 
-// REGISTER: maneja errores y deja req.user listo
 export const registerAuth = (req, res, next) => {
   passport.authenticate("register", { session: false }, (err, user, info) => {
     if (err) return next(err);
@@ -16,8 +15,6 @@ export const registerAuth = (req, res, next) => {
     next();
   })(req, res, next);
 };
-
-// LOGIN: controla mensajes de error y pasa user al controller
 export const loginAuth = (req, res, next) => {
   passport.authenticate("login", { session: false }, (err, user, info) => {
     if (err) return next(err);
@@ -33,8 +30,6 @@ export const loginAuth = (req, res, next) => {
     next();
   })(req, res, next);
 };
-
-// JWT: para /current y rutas protegidas
 export const jwtAuth = (req, res, next) => {
   passport.authenticate("jwt", { session: false }, (err, user, info) => {
     if (err) return next(err);

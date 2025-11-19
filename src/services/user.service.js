@@ -1,6 +1,7 @@
 import UserRepository from "../repositories/user.repository.js";
 import { sendEmail } from "../utils/mail.js";
 import jwt from "jsonwebtoken";
+import { resetPasswordTemplate } from "../templates/email/resetPassword.template.js";
 
 class UserService {
   constructor() {
@@ -24,8 +25,8 @@ class UserService {
   }
 
   async sendRecoveryEmail(email, tokenPlain, userId) {
-    const link = `${process.env.APP_BASE_URL}/api/users/reset?userId=${userId}&token=${tokenPlain}`;
-    const html = `<p>Click to reset password (expires in 1 hour)</p><a href="${link}">Reset password</a>`;
+    const link = `${process.env.APP_URL}/api/users/reset?userId=${userId}&token=${tokenPlain}`;
+    const html = resetPasswordTemplate(link);
     await sendEmail({ to: email, subject: "Password reset", html });
   }
 

@@ -1,6 +1,9 @@
 import cartModel from "../models/cart.model.js";
 
 class CartDAO {
+  all() { 
+    return cartModel.find().lean().populate('user','email first_name last_name').populate('products.product', 'title price category').exec();
+  }
   create(data) {
     return cartModel.create(data);
   }
