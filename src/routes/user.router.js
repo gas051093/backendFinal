@@ -1,6 +1,5 @@
 import { Router } from "express";
 import UserController from "../controllers/user.controller.js";
-import { authMiddleware } from "../middlewares/auth.middleware.js";
 import {
   registerAuth,
   loginAuth,
@@ -19,7 +18,6 @@ router.get("/logout", UserController.logout);
 router.post(
   "/update",
   jwtAuth,
-  authMiddleware,
   role(["admin"]),
   UserController.updatePassword
 );

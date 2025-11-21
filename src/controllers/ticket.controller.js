@@ -5,6 +5,8 @@ const purchaseService = new TicketService();
 class PurchaseController {
   static checkout = async (req, res) => {
     try {
+      if (!mongoose.isValidObjectId(req.params.cid))
+        return res.status(400).json({ message: "ID Invalido" });
       const { cid } = req.params;
       const user = req.user;
       try {

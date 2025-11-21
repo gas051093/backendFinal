@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import ProductService from "../services/product.service.js";
 
 const productService = new ProductService();
@@ -5,7 +6,7 @@ const productService = new ProductService();
 class ProductController {
   static create = async (req, res) => {
     try {
-      const { code } = req.body;;;
+      const { code } = req.body;
       const body = req.body;
       const exitCode = await productService.checkCode(code);
       if (exitCode)
@@ -20,7 +21,7 @@ class ProductController {
       const product = await productService.createProduct(body);
       res.status(201).json(product);
     } catch (err) {
-      res.status(500).json(err.message)
+      res.status(500).json(err.message);
     }
   };
 
@@ -41,8 +42,11 @@ class ProductController {
 
   static getOne = async (req, res) => {
     try {
+      if (!mongoose.isValidObjectId(req.params.pid))
+        return res.status(400).json({ message: "ID Invalido" });
       const product = await productService.getProductById(req.params.pid);
-      if (!product) return res.status(404).json({ message: "Product not found" });
+      if (!product)
+        return res.status(404).json({ message: "No se encuentra el producto" });
       res.json(product);
     } catch (err) {
       res
@@ -53,6 +57,8 @@ class ProductController {
 
   static update = async (req, res) => {
     try {
+      if (!mongoose.isValidObjectId(req.params.pid))
+        return res.status(400).json({ message: "ID Invalido" });
       const updated = await productService.updateProduct(
         req.params.pid,
         req.body
@@ -67,6 +73,8 @@ class ProductController {
 
   static delete = async (req, res) => {
     try {
+      if (!mongoose.isValidObjectId(req.params.pid))
+        return res.status(400).json({ message: "ID Invalido" });
       await productService.deleteProduct(req.params.pid);
       res.json({ message: "deleted" });
     } catch (err) {

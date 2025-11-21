@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import CartService from "../services/cart.service.js";
 
 const cartService = new CartService();
@@ -17,15 +18,20 @@ class CartController {
   static allCarts = async (req, res) => {
     try {
       const carts = await cartService.all();
-      res.json(carts)
+      res.json(carts);
     } catch (err) {
       res
         .status(500)
         .json({ message: "Error en el servidor", err: err.message });
     }
-};
+  };
   static addProduct = async (req, res) => {
     try {
+      if (
+        !mongoose.isValidObjectId(req.params.pid) ||
+        !mongoose.isValidObjectId(req.params.cid)
+      )
+        return res.status(400).json({ message: "IDs Invalidos" });
       const { cid } = req.params;
       const { pid } = req.params;
       const { qty = 1 } = req.body;
@@ -40,6 +46,11 @@ class CartController {
 
   static removeProduct = async (req, res) => {
     try {
+      if (
+        !mongoose.isValidObjectId(req.params.pid) ||
+        !mongoose.isValidObjectId(req.params.cid)
+      )
+        return res.status(400).json({ message: "IDs Invalidos" });
       const { cid, pid } = req.params;
       const updated = await cartService.removeProduct(cid, pid);
       res.json(updated);

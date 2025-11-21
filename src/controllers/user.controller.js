@@ -123,7 +123,8 @@ class UserController {
       const record = await passwordResetService.validateToken(userId, token);
       if (!record)
         return res.status(400).json({ message: "Token inválido o expirado" });
-
+      if (!mongoose.isValidObjectId(req.params.pid))
+        return res.status(400).json({ message: "ID del usuario invalido" });
       const user = await userService.getUserById(userId);
       if (!user)
         return res.status(404).json({ message: "Usuario no encontrado" });
